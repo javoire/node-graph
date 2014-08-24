@@ -75,9 +75,10 @@ var svg = d3.select(".nodes").append("svg")
     .attr("height", height);
 
 var force = d3.layout.force()
-    .gravity(.04)
+    .gravity(.05)
     .distance(150)
-    .charge(-2000)
+    .charge(-1000)
+    .chargeDistance(200)
     .size([width, height]);
 
 function renderNodes(input) {
