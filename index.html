@@ -1,17 +1,125 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-
-.link {
-  stroke: #ccc;
-}
-
-.node text {
-  pointer-events: none;
-  font: 10px sans-serif;
-}
-
-</style>
-<body>
-<script src="http://d3js.org/d3.v3.js"></script>
-<script src="script.js"></script>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,200,300,700' rel='stylesheet' type='text/css'>
+    <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Yanone Kaffeesatz', sans-serif;
+    }
+    .link {
+      stroke: #eee;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus,
+    button:focus {
+      outline: none;
+    }
+    .node text {
+      pointer-events: none;
+    }
+    .node circle {
+      fill: #eee;
+    }
+    .nodes {
+      background-color: #fafafa;
+      position: absolute;
+      height: 100%;
+      z-index: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .editor {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 300px;
+      float: left;
+      height: 100%;
+      position: absolute;
+      border-right: 2px solid #F86126;
+      z-index: 300;
+    }
+    .editor textarea {
+      box-sizing: border-box;
+      position: absolute;
+      width: 298px;
+      top: 0;
+      bottom: 40px;
+      left: 0;
+      border: none;
+      padding: 10px;
+      font-size: 1.2em;
+      color: #666;
+      font-family: 'Yanone Kaffeesatz', sans-serif;
+    }
+    .editor button {
+      position: absolute;
+      width: 300px;
+      height: 40px;
+      bottom: 0;
+      left: 0;
+      border: none;
+      background-color: #F86126;
+      text-transform: uppercase;
+      font-size: 1em;
+      color: white;
+    }
+    .editor button:active {
+      background-color: #E2521A;
+    }
+    .menu-button {
+      position: absolute;
+      font-size: 1.3em;
+      color: #eee;
+      top: 10px;
+    }
+    .menu-button.menu-open {
+      left: 10px;
+      z-index: 200;
+      color: #e1e1e1;
+    }
+    .menu-button:hover {
+      color: #F86126;
+      cursor: pointer;
+    }
+    .menu-button.menu-close {
+      right: 12px;
+      z-index: 1000;
+      transform: rotate(180deg);
+    }
+    </style>
+  </head>
+  <body>
+    <i class="fa fa-sign-out menu-button menu-open js-menu-toggle"></i>
+    <div class="editor">
+      <i class="fa fa-sign-out menu-button menu-close js-menu-toggle"></i>
+<textarea name="nodes" id="" cols="30" rows="10">
+Myriel Napoleon
+Gervais Myriel
+Fameuil Blacheville
+Blacheville Cravatte
+Fameuil Napoleon
+Gervais Myriel
+Marguerite Myriel
+Napoleon Cravatte
+Blacheville Gervais
+Marguerite Napoleon
+Fameuil Blacheville
+Napoleon Gervais
+</textarea>
+      <button>Go</button>
+    </div>
+    <div class="nodes"></div>
+    <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+    <script src="http://d3js.org/d3.v3.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

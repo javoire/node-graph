@@ -1,11 +1,15 @@
-function formatNodesJSON(json) {
+function errorMsg(msg) {
+  alert(msg);
+}
+
+function formatNodes(input) {
   var index = 0, targetString, indexMap = {}, formattedNodes = {
     nodes: [],
     links: []
   };
 
   // first create new structure for d3.layout.force
-  json.nodes.forEach(function(node) {
+  input.nodes.forEach(function(node) {
     targetString = node[Object.keys(node)[0]];
 
     if (!indexMap.hasOwnProperty(Object.keys(node)[0])) {
@@ -26,7 +30,7 @@ function formatNodesJSON(json) {
   });
 
   // then map all target indexes
-  formattedNodes.links = formattedNodes.links.map(function(link, index) {
+  formattedNodes.links = formattedNodes.links.map(function(link) {
 
     // this target is not also a source
     if (indexMap[link.target] === undefined) {
@@ -63,52 +67,53 @@ function formatNodesJSON(json) {
   return formattedNodes
 }
 
-var width = 960,
-    height = 500
+var width = $('.nodes').outerWidth(),
+    height = $('.nodes').outerHeight()
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select(".nodes").append("svg")
     .attr("width", width)
     .attr("height", height);
 
 var force = d3.layout.force()
-    .gravity(.05)
-    .distance(100)
-    .charge(-100)
+    .gravity(.04)
+    .distance(150)
+    .charge(-2000)
     .size([width, height]);
 
-d3.json("nodes.json", function(error, json) {
+function renderNodes(input) {
+  svg.selectAll('*').remove();
 
-  json = formatNodesJSON(json);
-
-  console.log(json);
+  input = formatNodes(input);
 
   force
-      .nodes(json.nodes)
-      .links(json.links)
+      .nodes(input.nodes)
+      .links(input.links)
       .start();
 
   var link = svg.selectAll(".link")
-      .data(json.links)
+      .data(input.links)
     .enter().append("line")
       .attr("class", "link");
 
   var node = svg.selectAll(".node")
-      .data(json.nodes)
+      .data(input.nodes)
     .enter().append("g")
       .attr("class", "node")
       .call(force.drag);
 
-  node.append("image")
-      .attr("xlink:href", "https://github.com/favicon.ico")
-      .attr("x", -8)
-      .attr("y", -8)
-      .attr("width", 16)
-      .attr("height", 16);
+  node.append("circle")
+      .attr("x", -15)
+      .attr("y", -15)
+      .attr("r", 30);
 
   node.append("text")
-      .attr("dx", 12)
+      .attr("dx", 0)
       .attr("dy", ".35em")
       .text(function(d) { return d.name });
+
+  node.selectAll('text').attr('dx', function() {
+    return -this.getComputedTextLength()/2;
+  })
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
@@ -118,4 +123,48 @@ d3.json("nodes.json", function(error, json) {
 
     node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
   });
-});
+}
+
+//-------------------------------
+// Menu
+//-------------------------------
+var menuOpen = true;
+
+$('.js-menu-toggle').click(function() {
+  menuOpen = !menuOpen;
+  if (menuOpen) {
+    $('.editor').show();
+  } else {
+    $('.editor').hide();
+  }
+})
+
+//-------------------------------
+// Editor
+//-------------------------------
+$('.editor button').click(function() {
+  var output = { nodes: [] }, input = $('.editor textarea').val();
+
+  if (input === undefined) {
+    errorMsg('Error. No input!');
+    return;
+  };
+
+  input = input.split('\n');
+
+  input.forEach(function(line) {
+    if (line === '') { return; };
+    var lineObj = {};
+    lineObj[line.split(' ')[0]] = line.split(' ')[1]
+    output.nodes.push(lineObj);
+  })
+
+  renderNodes(output);
+})
+
+//-------------------------------
+// Page load
+//-------------------------------
+$(function() {
+  $('.editor button').click();
+})
