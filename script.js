@@ -1,3 +1,22 @@
+function formatTextareaInput(textareaValue) {
+  var output = { nodes: [] }
+
+  textareaValue = textareaValue.split('\n');
+
+  textareaValue.forEach(function(line) {
+    if (line === '') { return; };
+    var lineObj = {};
+    lineObj[line.split(' ')[0]] = line.split(' ')[1]
+    output.nodes.push(lineObj);
+  })
+
+  return output;
+}
+
+function getGraphShareURL() {
+  return location.href.replace(/\?.*\=.*$/, '') + '?data=' + escape($('.editor textarea').val());
+}
+
 function errorMsg(msg) {
   alert(msg);
 }
@@ -130,37 +149,47 @@ function renderNodes(input) {
 // Menu
 //-------------------------------
 var menuOpen = true;
-
 $('.js-menu-toggle').click(function() {
-  menuOpen = !menuOpen;
   if (menuOpen) {
-    $('.editor').show();
-  } else {
     $('.editor').hide();
+  } else {
+    $('.editor').show();
   }
+  menuOpen = !menuOpen;
+})
+
+//-------------------------------
+// Share
+//-------------------------------
+$('.js-share-box').hide();
+var shareBoxOpen = false;
+$('.js-share').click(function() {
+  if (shareBoxOpen) {
+    $('.js-share-box').hide();
+  } else {
+    $('.js-share-box').show();
+    $('.js-share-box input').val(getGraphShareURL());
+    $('.js-share-box input').focus();
+  };
+  shareBoxOpen = !shareBoxOpen;
+});
+
+$('.js-share-box input').focus(function() {
+  this.select();
 })
 
 //-------------------------------
 // Editor
 //-------------------------------
 $('.editor button').click(function() {
-  var output = { nodes: [] }, input = $('.editor textarea').val();
+  var input = $('.editor textarea').val();
 
   if (input === undefined) {
     errorMsg('Error. No input!');
     return;
   };
 
-  input = input.split('\n');
-
-  input.forEach(function(line) {
-    if (line === '') { return; };
-    var lineObj = {};
-    lineObj[line.split(' ')[0]] = line.split(' ')[1]
-    output.nodes.push(lineObj);
-  })
-
-  renderNodes(output);
+  renderNodes(formatTextareaInput(input));
 })
 
 //-------------------------------
@@ -168,4 +197,11 @@ $('.editor button').click(function() {
 //-------------------------------
 $(function() {
   $('.editor button').click();
+
+  // check url params
+  var params = location.href.match(/\?data=(.*)/);
+  if (!!params) {
+    $('.editor textarea').val(decodeURIComponent(params[1]));
+    $('.editor button').click();
+  };
 })

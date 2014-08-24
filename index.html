@@ -11,6 +11,9 @@
       height: 100%;
       font-family: 'Yanone Kaffeesatz', sans-serif;
     }
+    input {
+      font-family: 'Yanone Kaffeesatz', sans-serif;
+    }
     .link {
       stroke: #eee;
     }
@@ -95,9 +98,59 @@
       z-index: 1000;
       transform: rotate(180deg);
     }
+    .share {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 500;
+    }
+    .share-box {
+      position: absolute;
+      top: -11px;
+      right: 40px;
+      width: 300px;
+      padding: 4px;
+    }
+    .share-box:after {
+      right: -30px;
+      top: 50%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-color: transparent;
+      border-left-color: #F86126;
+      border-width: 17px;
+      margin-top: -17px;
+    }
+    .share-box input {
+      width: 100%;
+      height: 100%;
+      border: 4px solid #F86126;
+      margin: 0;
+      padding: 4px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+    .share-button {
+      color: #bbb;
+      font-size: 1.4em;
+    }
+    .share-button:hover {
+      color: #E2521A;
+      cursor: pointer;
+    }
     </style>
   </head>
   <body>
+    <div class="share">
+      <i class="fa fa-share share-button js-share"></i>
+      <div class="share-box js-share-box">
+        <input type="text" value=""/>
+      </div>
+    </div>
     <i class="fa fa-sign-out menu-button menu-open js-menu-toggle"></i>
     <div class="editor">
       <i class="fa fa-sign-out menu-button menu-close js-menu-toggle"></i>
