@@ -1,3 +1,12 @@
+function renderNodesFromInput(input) {
+  if (input === undefined) {
+    errorMsg('Error. No input!');
+    return;
+  };
+
+  renderNodes(formatTextareaInput(input));
+}
+
 function formatTextareaInput(textareaValue) {
   var output = { nodes: [] }
 
@@ -182,14 +191,17 @@ $('.js-share-box input').focus(function() {
 // Editor
 //-------------------------------
 $('.editor button').click(function() {
-  var input = $('.editor textarea').val();
+  renderNodesFromInput($('.editor textarea').val());
+})
 
-  if (input === undefined) {
-    errorMsg('Error. No input!');
-    return;
+var textareaOldNumRows = $('.editor textarea').val().split('\n').length,
+    textareaNewNumRows = 0;
+$('.editor textarea').keyup(function() {
+  textareaNewNumRows = $('.editor textarea').val().split('\n').length;
+  if (textareaNewNumRows !== textareaOldNumRows) {
+    renderNodesFromInput($('.editor textarea').val());
   };
-
-  renderNodes(formatTextareaInput(input));
+  textareaOldNumRows = textareaNewNumRows;
 })
 
 //-------------------------------
