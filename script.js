@@ -1,31 +1,64 @@
 function formatNodesJSON(json) {
-  var targetString, indexMap = {}, formattedNodes = {
+  var index = 0, targetString, indexMap = {}, formattedNodes = {
     nodes: [],
     links: []
   };
 
-  // first create new structure
-  json.nodes.forEach(function(node, index) {
+  // first create new structure for d3.layout.force
+  json.nodes.forEach(function(node) {
     targetString = node[Object.keys(node)[0]];
-    indexMap[Object.keys(node)[0]] = index;
 
-    formattedNodes.nodes.push({
-      name: Object.keys(node)[0],
-      group: 0
-    })
+    if (!indexMap.hasOwnProperty(Object.keys(node)[0])) {
+      indexMap[Object.keys(node)[0]] = index;
+
+      formattedNodes.nodes.push({
+        name: Object.keys(node)[0],
+        group: 0 // all in the same group
+      })
+      index += 1; // only increment if we're actually adding to the nodes array
+    };
 
     formattedNodes.links.push({
-      source: index,
+      source: indexMap[Object.keys(node)[0]],
       target: targetString,
-      value: 1 // ?
+      value: 1 // dunno what this is for
     })
   });
 
   // then map all target indexes
   formattedNodes.links = formattedNodes.links.map(function(link, index) {
-    link.target = indexMap[targetString];
+
+    // this target is not also a source
+    if (indexMap[link.target] === undefined) {
+
+      // add it as a reversed version of itself, target<->source
+      formattedNodes.nodes.push({
+        name: link.target,
+        group: 0
+      })
+      formattedNodes.links.push({
+        source: formattedNodes.nodes.length-1, // this is the last element added
+        target: link.source,
+        value: 1
+      })
+
+      // we also need to update the indexMap
+      if (!indexMap.hasOwnProperty(link.target)) {
+        indexMap[link.target] = formattedNodes.nodes.length-1;
+      }
+    };
+
+
+    link.target = indexMap[link.target];
     return link;
   });
+
+  // then remove all links that has no target
+  for (var i = formattedNodes.links.length - 1; i >= 0; i--) {
+    if (formattedNodes.links[i] === null) {
+      formattedNodes.links.splice(i, 1);
+    };
+  };
 
   return formattedNodes
 }

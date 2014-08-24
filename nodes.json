@@ -1,7 +1,10 @@
 {
   "nodes": [
     {"Hanna":"Olle"},
-    {"Olle":"Olle"},
-    {"EA":"Olle"}
+    {"Olle":"EA"},
+    {"EA":"Joppe"},
+    {"EA":"Someone"},
+    {"EA":"Someone else"},
+    {"Swag":"Lol"}
   ]
 }
