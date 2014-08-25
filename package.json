@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "lingon": "^1.4.0",
+    "lingon-watch": "0.0.1"
+  }
+}
